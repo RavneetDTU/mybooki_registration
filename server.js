@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const registerRoute = require('./routes/register');
 const registrationsRoute = require('./routes/registrations');
+const authProxyRoute = require('./routes/auth-proxy');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }));
 // ── Routes ──
 app.use('/api/register', registerRoute);
 app.use('/api/registrations', registrationsRoute);
+app.use('/api/auth', authProxyRoute);
 
 // ── Health check ──
 app.get('/', (_req, res) => {
