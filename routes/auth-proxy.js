@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Define the internal URL for your 5016 app
 // If they are on the same machine, localhost is perfect.
-const AUTH_SERVICE_URL = 'http://localhost:6000';
+const AUTH_SERVICE_URL = 'http://103.55.104.142:5016';
 
 // 1. Proxy Route for Initial Google Login
 router.post('/google', async (req, res) => {
