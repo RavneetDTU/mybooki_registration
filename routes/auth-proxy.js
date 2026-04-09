@@ -4,7 +4,7 @@ const router = express.Router();
 
 // Define the internal URL for your 5016 app
 // If they are on the same machine, localhost is perfect.
-const AUTH_SERVICE_URL = 'http://103.55.104.142:5016';
+const AUTH_SERVICE_URL = 'http://localhost:6000';
 
 // 1. Proxy Route for Initial Google Login
 router.post('/google', async (req, res) => {
@@ -66,6 +66,45 @@ router.get('/events/:calendarId', async (req, res) => {
         console.error("Error proxying to 5016 /api/auth/events:", error.message);
         if (error.response) return res.status(error.response.status).json(error.response.data);
         res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+// 5. Proxy Route for Updating Calendar Settings
+router.patch('/calendars/:calendarId/settings', async (req, res) => {
+    try {
+        const response = await axios.patch(
+            `${AUTH_SERVICE_URL}/api/auth/calendars/${req.params.calendarId}/settings`,
+            req.body // { openTime, closeTime }
+        );
+
+        res.status(response.status).json(response.data);
+    } catch (error) {
+        console.error("Error proxying to 5016 /api/auth/calendars/:calendarId/settings:", error.message);
+
+        if (error.response) {
+            return res.status(error.response.status).json(error.response.data);
+        }
+
+        res.status(500).json({ error: 'Internal Server Error while updating calendar settings' });
+    }
+});
+
+// 6. Proxy Route for Deleting / Disconnecting Calendar
+router.delete('/calendars/:calendarId', async (req, res) => {
+    try {
+        const response = await axios.delete(
+            `${AUTH_SERVICE_URL}/api/auth/calendars/${req.params.calendarId}`
+        );
+
+        res.status(response.status).json(response.data);
+    } catch (error) {
+        console.error("Error proxying to 5016 DELETE /api/auth/calendars/:calendarId:", error.message);
+
+        if (error.response) {
+            return res.status(error.response.status).json(error.response.data);
+        }
+
+        res.status(500).json({ error: 'Internal Server Error while deleting calendar' });
     }
 });
 
