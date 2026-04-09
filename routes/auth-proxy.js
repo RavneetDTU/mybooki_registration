@@ -4,9 +4,9 @@ const router = express.Router();
 
 // Define the internal URL for your 5016 app
 // If they are on the same machine, localhost is perfect.
-const AUTH_SERVICE_URL = 'http://localhost:6000';
+const AUTH_SERVICE_URL = 'http://103.55.104.142:5016';
 
-// 1. Proxy Route for Initial Google Login
+// poxy Route for Initial Google Login
 router.post('/google', async (req, res) => {
     try {
         // We forward the exact body we received from the frontend to the 5016 app
@@ -89,7 +89,7 @@ router.patch('/calendars/:calendarId/settings', async (req, res) => {
     }
 });
 
-// 6. Proxy Route for Deleting / Disconnecting Calendar
+//// 6. Proxy Route for Deleting / Disconnecting Calendar
 router.delete('/calendars/:calendarId', async (req, res) => {
     try {
         const response = await axios.delete(
@@ -107,6 +107,4 @@ router.delete('/calendars/:calendarId', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error while deleting calendar' });
     }
 });
-
-
 module.exports = router;
