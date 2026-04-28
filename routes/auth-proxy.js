@@ -5,6 +5,7 @@ const router = express.Router();
 // Define the internal URL for your 5016 app
 // If they are on the same machine, localhost is perfect.
 const AUTH_SERVICE_URL = 'http://103.55.104.142:5016';
+const LOCAL_URL = 'http://localhost:6000';
 
 // poxy Route for Initial Google Login
 router.post('/google', async (req, res) => {
@@ -107,4 +108,25 @@ router.delete('/calendars/:calendarId', async (req, res) => {
         res.status(500).json({ error: 'Internal Server Error while deleting calendar' });
     }
 });
+
+// 7. Proxy Route for Booking Calendar Event
+router.post('/calendar/book-event', async (req, res) => {
+    try {
+        const response = await axios.post(
+            `${AUTH_SERVICE_URL}/api/auth/calendar/book-event`,
+            req.body
+        );
+
+        res.status(response.status).json(response.data);
+    } catch (error) {
+        console.error("Error proxying to 5016 POST /api/calendar/book-event:", error.message);
+
+        if (error.response) {
+            return res.status(error.response.status).json(error.response.data);
+        }
+
+        res.status(500).json({ error: 'Internal Server Error while booking calendar event' });
+    }
+});
+
 module.exports = router;
